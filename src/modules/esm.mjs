@@ -1,17 +1,25 @@
 import path from 'node:path';
 import { release, version } from 'os';
 import { createServer as createServerHttp } from 'http';
+import fs from 'node:fs/promises';
 import './files/c.js';
 
 const random = Math.random();
 
 let unknownObject;
 
+const dir = path.join(import.meta.dirname, 'files');
+
+const fileToReadA = path.join(dir, 'a.json');
+const fileToReadB = path.join(dir, 'b.json');
+
 if (random > 0.5) {
-  unknownObject = await import('./files/a.json', { with: { type: 'json' } });
+  unknownObject = await fs.readFile(fileToReadA, 'utf8');
 } else {
-  unknownObject = await import('./files/b.json', { with: { type: 'json' } });
+  unknownObject = await fs.readFile(fileToReadB, 'utf8');
 }
+
+unknownObject = JSON.parse(unknownObject);
 
 console.log(`Release ${release()}`);
 console.log(`Version ${version()}`);
@@ -26,7 +34,7 @@ const myServer = createServerHttp((_, res) => {
 
 const PORT = 3000;
 
-console.log(unknownObject.default);
+console.log(unknownObject);
 
 myServer.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
