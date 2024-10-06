@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import os from 'node:os';
 
 const read = async () => {
   const dir = path.join(import.meta.dirname, 'files');
@@ -10,7 +11,7 @@ const read = async () => {
   const stream = file.createReadStream();
 
   stream.on('data', (chunk) => {
-    process.stdout.write(chunk.toString());
+    process.stdout.write(chunk.toString() + os.EOL);
   });
 
   stream.on('close', async () => {
